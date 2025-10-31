@@ -1,0 +1,9 @@
+<main>
+  <app-rule-builder 
+    [config]="ruleBuilderConfig"
+    [title]="builderTitle"
+    [description]="builderDescription"
+    [(ngModel)]="rules"
+    (ruleChange)="onRuleChange($event)">
+  </app-rule-builder>
+</main>

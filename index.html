@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Angular Coupon Conditions Builder</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@ng-select/ng-select@latest/themes/default.theme.css" />
+    <style>
+      body {
+        background-color: #f1f5f9; /* slate-100 */
+        font-family: Inter, sans-serif;
+      }
+      .ng-select .ng-select-container {
+        border-color: #d1d5db; /* gray-300 */
+      }
+      .ng-select.ng-select-focused .ng-select-container {
+        border-color: #3b82f6 !important; /* blue-500 */
+        box-shadow: 0 0 0 1px #3b82f6 !important;
+      }
+      .ng-select.ng-select-invalid .ng-select-container {
+        border-color: #ef4444 !important; /* red-500 */
+      }
+      .ng-select.ng-select-invalid.ng-select-focused .ng-select-container {
+         box-shadow: 0 0 0 1px #ef4444 !important;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://aistudiocdn.com/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://aistudiocdn.com/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://aistudiocdn.com/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://aistudiocdn.com/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://aistudiocdn.com/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://aistudiocdn.com/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/compiler": "https://next.esm.sh/@angular/compiler@^20.3.7?external=rxjs",
+    "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^20.3.7?external=rxjs",
+    "@angular/core": "https://next.esm.sh/@angular/core@^20.3.7?external=rxjs",
+    "@angular/common/http": "https://next.esm.sh/@angular/common@^20.3.7/http?external=rxjs",
+    "@angular/forms": "https://next.esm.sh/@angular/forms@^20.3.7?external=rxjs",
+    "@ng-select/ng-select": "https://next.esm.sh/@ng-select/ng-select@^20.4.3?external=rxjs",
+    "@angular/common": "https://next.esm.sh/@angular/common@^20.3.7?external=rxjs"
+  }
+}
+</script>
+</head>
+<body class="antialiased">
+    <app-root></app-root>
+</body>
+</html>

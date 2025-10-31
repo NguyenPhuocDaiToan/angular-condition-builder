@@ -1,0 +1,5 @@
+{
+  "name": "Angular Coupon Conditions Builder",
+  "description": "A dynamic condition builder for a coupon management system, allowing for complex rule creation with AND/OR logic and nested groups.",
+  "requestFramePermissions": []
+}
