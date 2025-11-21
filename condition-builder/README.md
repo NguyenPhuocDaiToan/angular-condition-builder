@@ -1,63 +1,194 @@
-# ConditionBuilder
+# Angular Dynamic Rule Builder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.0.
+A flexible, configuration-driven component for building complex, nested query rules in Angular applications. Ideal for creating advanced search filters, coupon conditions, alert triggers, and more.
 
-## Code scaffolding
+This component is built using modern Angular features, including Standalone Components, Signals, and OnPush change detection for optimal performance and a great developer experience.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+![Component Screenshot](https://i.imgur.com/example.png) <!-- Placeholder Image -->
 
-```bash
-ng generate component component-name
-```
+## Features
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **Nested Logic:** Create complex rules with nested `AND`/`OR` condition groups.
+- **Dynamic Field Configuration:** Define all fields, their types, and available operators via a simple configuration object.
+- **Multiple Input Types:** Supports `text`, `number`, `date`, `boolean`, and `select` dropdowns out of the box.
+- **Asynchronous Data Loading:** The `select` input type supports async, paginated data fetching with typeahead search.
+- **Forms Integration:** Implements `ControlValueAccessor` for seamless use with `[(ngModel)]` and reactive forms.
+- **Modern Angular:** Built with Standalone Components, Signals, and OnPush change detection.
+- **Minimal Dependencies:** Relies only on the excellent `@ng-select/ng-select` for advanced dropdown functionality.
 
-```bash
-ng generate --help
-```
+## Installation
 
-## Building
-
-To build the library, run:
-
-```bash
-ng build condition-builder
-```
-
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
-
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/condition-builder
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+To use this library, install it via npm (or your preferred package manager):
 
 ```bash
-ng test
+npm install angular-dynamic-rule-builder @ng-select/ng-select
+```
+*(Note: `angular-dynamic-rule-builder` is a placeholder name for this package)*
+
+## Setup
+
+1.  **Import the Component:** Since the component is `standalone`, you can import it directly into the `imports` array of your component or module.
+
+    ```typescript
+    import { RuleBuilderComponent } from 'angular-dynamic-rule-builder';
+
+    @Component({
+      // ...
+      standalone: true,
+      imports: [
+        RuleBuilderComponent,
+        FormsModule // Required for ngModel
+      ],
+    })
+    export class YourComponent {}
+    ```
+
+2.  **Add Styles for ng-select:** The library uses `@ng-select/ng-select`, which requires its theme CSS to be included in your application. Add the following to your `angular.json` styles array or `index.html`.
+
+    ```json
+    // angular.json
+    "styles": [
+      "src/styles.css",
+      "./node_modules/@ng-select/ng-select/themes/default.theme.css"
+    ]
+    ```
+    OR
+    ```html
+    <!-- index.html -->
+    <link rel="stylesheet" href="https://unpkg.com/@ng-select/ng-select@latest/themes/default.theme.css" />
+    ```
+
+## Usage
+
+Using the rule builder involves two main steps: creating a configuration object and adding the component to your template.
+
+### 1. Component Configuration (`.ts`)
+
+In your component's TypeScript file, define the `RuleBuilderConfig` and the initial state for your rules.
+
+```typescript
+import { Component, signal } from '@angular/core';
+import { ConditionGroup, RuleBuilderConfig, Field, Operator, FieldSource, PaginatedResponse } from 'angular-dynamic-rule-builder';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.component.html',
+})
+export class ExampleComponent {
+
+  // The rule structure for our form, bound with ngModel
+  rules = signal<ConditionGroup>({
+    id: 'root',
+    operator: 'AND',
+    conditions: [],
+  });
+  
+  // Configuration for the rule builder, passed as an input.
+  ruleBuilderConfig: RuleBuilderConfig;
+
+  constructor() {
+    this.ruleBuilderConfig = {
+      fields: this.getFields(),
+      fetchOptions: this.fetchOptions.bind(this)
+    };
+  }
+
+  // Define the fields available in the rule builder
+  private getFields(): Field[] {
+    return [
+      { id: 'customer_name', name: 'Customer Name', type: 'text', operators: [Operator.CONTAINS, Operator.EQUALS] },
+      { id: 'order_count', name: 'Order Count', type: 'number', operators: [Operator.GREATER_THAN, Operator.EQUALS] },
+      { id: 'last_login', name: 'Last Login Date', type: 'date', operators: [Operator.LESS_THAN] },
+      { id: 'is_active', name: 'Is Active', type: 'boolean', operators: [Operator.EQUALS] },
+      {
+        id: 'customer_id',
+        name: 'Customer',
+        type: 'select',
+        operators: [Operator.EQUALS, Operator.NOT_EQUALS],
+        source: {
+          apiUrl: '/api/customers',
+          valueField: 'id',
+          labelField: 'name',
+        },
+      },
+    ];
+  }
+
+  // Implement the data fetching logic for 'select' fields
+  private fetchOptions(source: FieldSource, page: number, term: string): Observable<PaginatedResponse<any>> {
+    console.log(`Fetching from ${source.apiUrl} page ${page} with term "${term}"`);
+    
+    // In a real app, this would be an HTTP request
+    const allCustomers = [
+        { id: 'user_1', name: 'John Doe' },
+        { id: 'user_2', name: 'Jane Smith' },
+        // ... more users
+    ];
+    const filtered = allCustomers.filter(c => c.name.toLowerCase().includes(term.toLowerCase()));
+    
+    return of({
+        results: filtered,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        totalResults: filtered.length,
+      }).pipe(delay(500));
+  }
+}
 ```
 
-## Running end-to-end tests
+### 2. Template Integration (`.html`)
 
-For end-to-end (e2e) testing, run:
+Add the component to your template and bind the configuration and `ngModel`.
 
-```bash
-ng e2e
+```html
+<main class="p-8">
+  <app-rule-builder 
+    [config]="ruleBuilderConfig"
+    title="Marketing Campaign Rules"
+    description="Define the conditions for customers to be included in this campaign."
+    [(ngModel)]="rules"
+  >
+  </app-rule-builder>
+
+  <!-- You can display the output for debugging -->
+  <div class="mt-8">
+    <h3>Live Rule Output:</h3>
+    <pre><code>{{ rules() | json }}</code></pre>
+  </div>
+</main>
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## API Reference
 
-## Additional Resources
+### Component: `app-rule-builder`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Property        | Type                  | Description                                                                                             |
+|-----------------|-----------------------|---------------------------------------------------------------------------------------------------------|
+| **Inputs**      |                       |                                                                                                         |
+| `config`        | `RuleBuilderConfig`   | **Required.** The configuration object that defines fields and data fetching logic.                       |
+| `title`         | `string`              | An optional title to display at the top of the builder.                                                 |
+| `description`   | `string`              | An optional description to display below the title.                                                     |
+| **Outputs**     |                       |                                                                                                         |
+| `ruleChange`    | `EventEmitter<ConditionGroup>` | Emits the complete `ConditionGroup` object every time a rule is changed. Useful if you are not using `ngModel`. |
+| **`[(ngModel)]`** | `ConditionGroup`      | Provides two-way data binding for the rule structure.                                                   |
+
+### Configuration: `RuleBuilderConfig`
+
+| Property       | Type                  | Description                                                                 |
+|----------------|-----------------------|-----------------------------------------------------------------------------|
+| `fields`       | `Field[]`             | **Required.** An array of `Field` objects that users can select from.         |
+| `fetchOptions` | `FetchOptionsFn`      | **Required.** A function to handle data fetching for `select` type fields.    |
+
+
+## Peer Dependencies
+
+Your project must have the following packages installed:
+
+- `@angular/core`
+- `@angular/common`
+- `@angular/forms`
+- `@ng-select/ng-select`
+- `rxjs`
