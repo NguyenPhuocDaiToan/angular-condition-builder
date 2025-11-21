@@ -21,6 +21,10 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "condition-builder": [
+        "./dist/condition-builder",
+        "./dist/condition-builder"
       ]
     }
   },
@@ -29,5 +33,19 @@
   ],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true
-  }
+  },
+  "references": [
+    {
+      "path": "./condition-builder/tsconfig.lib.json"
+    },
+    {
+      "path": "./condition-builder/tsconfig.spec.json"
+    },
+    {
+      "path": "./condition-builder/tsconfig.lib.json"
+    },
+    {
+      "path": "./condition-builder/tsconfig.spec.json"
+    }
+  ]
 }
