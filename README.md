@@ -21,9 +21,8 @@ This component is built using modern Angular features, including Standalone Comp
 To use this library, install it via npm (or your preferred package manager):
 
 ```bash
-npm install angular-dynamic-rule-builder @ng-select/ng-select
+npm install angular-condition-builder @ng-select/ng-select
 ```
-*(Note: `angular-dynamic-rule-builder` is a placeholder name for this package)*
 
 ## Setup
 
